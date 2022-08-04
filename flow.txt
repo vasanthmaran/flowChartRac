@@ -1,0 +1,146 @@
+st=>start: FCU Return air temperature setpoint violation
+
+cond=>condition: RCA:  Return airtemperature 
+sensor error|basic 
+
+cond2=>condition: RCA: Supply air temperature sensor error|basic
+
+cond3=>condition: RCA: Return air 
+temperature data reliability error|basic
+
+cond4=>condition: RCA: Supply air 
+temperature data reliabiity error|basic
+
+cond5=>condition: RCA: Chilled water 
+valve command 
+data reliability error|basic
+
+cond6=>condition: RCA: Heating water valve 
+command data reliability error
+
+cond7=>condition: RCA: Cooling is required; Cooling coil valve is not open|basic
+
+cond8=>condition: RCA: Heating is required; 
+Heating coil valve is not open|basic
+
+cond9=>condition: RCA: HIU pump 
+not in operation|basic
+
+cond10=>condition: RCA: HIU pump flow 
+is very low|basic
+
+cond11=>condition: RCA: Ineffective 
+heat exchange due to 
+scaling/fouling in heat exchange coil|basic
+
+cond12=>condition: RCA: Supply temperature 
+from HIU is very high (undercooling)|basic
+
+cond13=>condition: RCA: Chilled water 
+pump not in operation|basic
+
+cond14=>condition: RCA: Chilled water pump flow is very low|basic
+
+cond15=>condition: RCA: Chiller 
+not in operation|basic
+
+cond16=>condition: RCA: Supply temperature 
+from chiller is very high (undercooling)|basic
+
+io=>inputoutput: Register:>https://www.locize.app/register[blank] 
+op1=>inputoutput: RCA 1
+Detected|rca:>https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank]
+
+op2=>inputoutput: RCA 2
+Detected|rca:>https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank]
+
+op3=>inputoutput: RCA 3 Detected|rca
+
+op4=>inputoutput: RCA 4
+Detected|rca:>https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank] 
+
+op5=>inputoutput: RCA 5 
+Detected|rca
+
+op6=>inputoutput: RCA 6 
+Detected
+
+op7=>inputoutput: RCA 7 
+Detected|rca
+
+op8=>inputoutput: RCA 8 
+Detected|rca
+op9=>inputoutput: RCA 9 
+Detected|rca
+op10=>inputoutput: RCA 10
+Detected|rca
+
+op11=>inputoutput: RCA 11
+Detected|rca
+
+op12=>inputoutput: RCA 12
+Detected|rca
+
+op13=>inputoutput: RCA 13
+Detected|rca
+
+op14=>inputoutput: RCA 14
+Detected|rca
+
+op15=>inputoutput: RCA 15
+Detected|rca
+
+op16=>operation: RCA 16
+Detected|rca
+
+
+e=>end: End:>https://youtu.be/YQryHo1iHb8[blank]  
+
+st->cond 
+cond(yes)->op1
+cond(no, bottom)->cond2
+
+cond2(yes)->op2
+cond2(no)->cond3
+ 
+cond3(yes)->op3
+cond3(no, bottom)->cond4 
+
+cond4(yes)->op4
+cond4(no)->cond5
+
+cond5(yes)->op5
+cond5(no, bottom)->cond6
+
+cond6(yes)->op6
+cond6(no)->cond7
+
+cond7(yes)->op7
+cond7(no, bottom)->cond8
+
+cond8(yes)->op8
+cond8(no)->cond9
+
+cond9(yes)->op9
+cond9(no, bottom)->cond10
+
+cond10(yes)->op10
+cond10(no, )->cond11
+
+cond11(yes)->op11
+cond11(no, bottom)->cond12
+
+cond12(yes)->op12
+cond12(no, )->cond13
+
+cond13(yes)->op13
+cond13(no, bottom)->cond14
+
+cond14(yes)->op14
+cond14(no, bottom)->cond15
+
+cond15(yes)->op15
+cond15(no, bottom)->cond16
+
+cond16(yes)->op16
+cond16(no, bottom)->e
