@@ -23,12 +23,8 @@
 
             window.onload = function () {
                 
-                fetch('https://github.com/vasanthmaran/flowChartRac/blob/main/flow.txt')
-                .then(response => response.text())
-                .then(data => {
-                    
                     var chart;
-                    var code = data;
+                    var code = 'st=>start: FCU Return air temperature setpoint violation\n\ncond=>condition: RCA:  Return airtemperature \nsensor error|basic \n\ncond2=>condition: RCA: Supply air temperature sensor error|basic\n\ncond3=>condition: RCA: Return air \ntemperature data reliability error|basic\n\ncond4=>condition: RCA: Supply air \ntemperature data reliabiity error|basic\n\ncond5=>condition: RCA: Chilled water \nvalve command \ndata reliability error|basic\n\ncond6=>condition: RCA: Heating water valve \ncommand data reliability error\n\ncond7=>condition: RCA: Cooling is required; Cooling coil valve is not open|basic\n\ncond8=>condition: RCA: Heating is required; \nHeating coil valve is not open|basic\n\ncond9=>condition: RCA: HIU pump \nnot in operation|basic\n\ncond10=>condition: RCA: HIU pump flow \nis very low|basic\n\ncond11=>condition: RCA: Ineffective \nheat exchange due to \nscaling/fouling in heat exchange coil|basic\n\ncond12=>condition: RCA: Supply temperature \nfrom HIU is very high (undercooling)|basic\n\ncond13=>condition: RCA: Chilled water \npump not in operation|basic\n\ncond14=>condition: RCA: Chilled water pump flow is very low|basic\n\ncond15=>condition: RCA: Chiller \nnot in operation|basic\n\ncond16=>condition: RCA: Supply temperature \nfrom chiller is very high (undercooling)|basic\n\nio=>inputoutput: Register:>https://www.locize.app/register[blank] \nop1=>inputoutput: RCA 1\nDetected|rca:>https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank]\n\nop2=>inputoutput: RCA 2\nDetected|rca:>https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank]\n\nop3=>inputoutput: RCA 3 Detected|rca\n\nop4=>inputoutput: RCA 4\nDetected|rca:>https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank] \n\nop5=>inputoutput: RCA 5 \nDetected|rca\n\nop6=>inputoutput: RCA 6 \nDetected\n\nop7=>inputoutput: RCA 7 \nDetected|rca\n\nop8=>inputoutput: RCA 8 \nDetected|rca\nop9=>inputoutput: RCA 9 \nDetected|rca\nop10=>inputoutput: RCA 10\nDetected|rca\n\nop11=>inputoutput: RCA 11\nDetected|rca\n\nop12=>inputoutput: RCA 12\nDetected|rca\n\nop13=>inputoutput: RCA 13\nDetected|rca\n\nop14=>inputoutput: RCA 14\nDetected|rca\n\nop15=>inputoutput: RCA 15\nDetected|rca\n\nop16=>operation: RCA 16\nDetected|rca\n\n\ne=>end: End:>https://youtu.be/YQryHo1iHb8[blank]  \n\nst->cond \ncond(yes)->op1\ncond(no, bottom)->cond2\n\ncond2(yes)->op2\ncond2(no)->cond3\n \ncond3(yes)->op3\ncond3(no, bottom)->cond4 \n\ncond4(yes)->op4\ncond4(no)->cond5\n\ncond5(yes)->op5\ncond5(no, bottom)->cond6\n\ncond6(yes)->op6\ncond6(no)->cond7\n\ncond7(yes)->op7\ncond7(no, bottom)->cond8\n\ncond8(yes)->op8\ncond8(no)->cond9\n\ncond9(yes)->op9\ncond9(no, bottom)->cond10\n\ncond10(yes)->op10\ncond10(no, )->cond11\n\ncond11(yes)->op11\ncond11(no, bottom)->cond12\n\ncond12(yes)->op12\ncond12(no, )->cond13\n\ncond13(yes)->op13\ncond13(no, bottom)->cond14\n\ncond14(yes)->op14\ncond14(no, bottom)->cond15\n\ncond15(yes)->op15\ncond15(no, bottom)->cond16\n\ncond16(yes)->op16\ncond16(no, bottom)->e';
 
                     if (chart) {
                         chart.clean();
@@ -86,8 +82,6 @@
                             'right': {'line-length': 2}
                         }
                     });
-                });
-                
                 $('[id^=sub1]').click(function(){
                 alert('info here');
                 });
