@@ -1,0 +1,160 @@
+<html>
+
+<head>
+    <!-- <title>Animated charts</title> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script type="text/javascript" src="https://static.facilio.com/apps-sdk/latest/facilio_apps_sdk.min.js"></script>
+    
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://flowchart.js.org/flowchart-latest.js"></script>
+
+</head>
+
+<body>
+   
+    <div id="app" v-loading="loading" style="padding: 20px;">
+        <div id="canvas" style="width: 100%;">
+        </div>
+    </div>
+
+
+</body>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                loading: true
+            }
+        },
+        mounted() {
+            window.facilioApp = FacilioAppSDK.init();
+            window.facilioApp.on('app.loaded', (data) => {
+                console.log(data)
+                let timeParamMap = {};
+                if (data && data.context && data.context.dashboardFilter && data.context.dashboardFilter && data.context.dashboardFilter.timelineFilter) {
+                    let paramMap = {
+                        startTime: data.context.dashboardFilter.timelineFilter.startTime,
+                        endTime: data.context.dashboardFilter.timelineFilter.endTime,
+                        operatorId: data.context.dashboardFilter.timelineFilter.operatorId,
+                        value: data.context.dashboardFilter.timelineFilter.dateValueString
+                    }
+                    timeParamMap = paramMap;
+                }
+                this.functionDataLoad(timeParamMap)
+            })
+
+            window.facilioApp.on('db.filters.changed', (data) => {
+                console.log(data)
+                let timeParamMap = {};
+                if (data && data.dashboardFilter && data.dashboardFilter.timelineFilter) {
+                    let paramMap = {
+                        startTime: data.dashboardFilter.timelineFilter.startTime,
+                        endTime: data.dashboardFilter.timelineFilter.endTime,
+                        operatorId: data.dashboardFilter.timelineFilter.operatorId,
+                        value: data.dashboardFilter.timelineFilter.dateValueString
+                    }
+                    timeParamMap = paramMap;
+                }
+                this.functionDataLoad(timeParamMap)
+            })
+        },
+        methods: {
+            functionDataLoad(timeParamMap) {
+              this.loading = true
+              console.log("timeParamMap", timeParamMap)
+                let res
+                let urlParams = {
+                    method: 'post',
+                    data: {
+                        workflowId: 1212,
+                        paramList: [timeParamMap]
+                    }
+                }
+                window.facilioApp.request.invokeFacilioAPI('/v2/workflow/runWorkflow', urlParams)
+                    .then((response) => {
+                        if (response.result && response.result.workflow) {
+                            res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
+                        }
+                        var chart;
+                        var code = data;
+
+                        if (chart) {
+                            chart.clean();
+                        }
+                        chart = flowchart.parse(strings);
+                        chart.drawSVG('canvas', {
+                                'x': 50,
+                                'y': 50,
+                                'line-width': 2.2,
+                                'maxWidth':1,//ensures the flowcharts fits within a certian width
+                                'line-length': 20,
+                                'text-margin': 12,
+                                'text-align':'center',
+                                'font-size': 11,
+                                'font': 'normal',
+                                'font-family': 'Helvetica',
+                                'font-weight': 'normal',
+                                'font-color': 'black',
+                                'line-color': '#7F8487',
+                                'element-color': '#7F8487',
+                                'fill': 'white',
+                                'yes-text': 'yes',
+                                'no-text': 'no',
+                                'arrow-end': 'block',
+                                'scale': 1,
+                                'symbols': {
+                                    'start': {
+                                    'font-color': '#1B2430',
+                                    'element-color': '#AEDBCE',
+                                    'fill': '#D3EBCD',
+                                    'font-size' : 12,
+                                
+                                    },
+                                    'end':{
+                                        'font-family': 'BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+                                    // 'class': 'end-element'
+                                    },
+                                    'condition':{
+                                        'font-color': '#1B2430',
+                                        'element-color': '#AEDBCE',
+                                        'fill': '#D3EBCD',
+                                        'font-size' : 11
+                                    }
+                                },
+                                'flowstate' : {
+                                    'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                                    'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                                    'future' : { 'fill' : '#FFFF99'},
+                                    'request' : { 'fill' : 'blue'},
+                                    'invalid': {'fill' : '#444444'},
+                                    'basic': {'font-size' : 11, 'yes-text' : 'Yes', 'no-text' : 'No', 'line-color': '#7F8487',},
+                                    'approved' : { 'fill' : '#58C4A3', 'font-size' : 11, 'yes-text' : 'Yes', 'no-text' : 'No' },
+                                    'rejected' : { 'fill' : '#C45879', 'font-size' : 11, 'yes-text' : 'Yes', 'no-text' : 'No' },
+                                    'rca': {'font-size' : 11,'line-length': 10},
+                                    'right': {'line-length': 2}
+                                }
+                            });
+                        this.loading = false
+                    })
+                    $('[id^=sub1]').click(function(){
+                        alert('info here');
+                        }); 
+            }
+            
+        },
+    })
+</script>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    
+    #main {
+        width: 100%;
+        height: 80%;
+    }
+    
+</style>
+</html>
