@@ -27,10 +27,10 @@
                 </el-table-column>
                 <el-table-column label="Name" prop="ruleName" sortable  width="500px"> </el-table-column>
                 <el-table-column label="Category" width="200px" prop="assetCategoy" style="text-align: center;"> </el-table-column>
-                <el-table-column label="Type" prop="faultType" width="200px" style="text-align: center;"> </el-table-column>
-                <el-table-column label="Duration" prop="duration" width="200px" sortable style="text-align: center;"> </el-table-column>
+                <el-table-column label="Type" prop="faultType" width="150px" style="text-align: center;"> </el-table-column>
+                <el-table-column label="Duration" prop="duration" width="150px" sortable style="text-align: center;"> </el-table-column>
                  <el-table-column label="Rank" prop="rank" width="150px" sortable style="text-align: center;"> </el-table-column>
-                <el-table-column label="Action"  style="text-align: center;" >
+                <el-table-column label="Action"  style="text-align: center;" width="150px">
                     <template slot-scope="props">
                         <el-link style="color: #409eff;"  :href="props.row.url" target="_blank">More</el-link>
                     </template>
