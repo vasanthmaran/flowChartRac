@@ -110,68 +110,77 @@
                         res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
                     }
                     this.tableData = res.tableData
-                    
-                    var options = {
-                        chart: {
-                            height: 300,
-                            type: 'rangeBar'
-                        },
-                        series: [
-                            {
-                                data: res.fcudata
-                            }
-                        ],
-                        plotOptions: {
-                            bar: {
-                                horizontal: true,
-                                barHeight: '20%'
-                            }
-                        },
-                        xaxis: {
-                            type: 'datetime',
-                            labels: {
-                                format: 'dd/MM/yyyy',
-                            }
-                        },
-                        yaxis: {
-                            
-                            show: true,
-                        },
-                        grid: {
-                            row: {
-                                colors: ['#f3f4f5', '#fff'],
-                                opacity: 1
-                            }
-                        },
-                        tooltip: {
-                            x: {
-                                show: false,
-                                format: 'dd/MM HH:mm',
-                            }
-                        },
-                        dataLabels: {
-                            textAnchor: 'start',
-                            distributed: false,
-                            offsetX: 0,
-                            offsetY: 0,
-                            dropShadow: true
-                        },
-                        stroke: {
-                            width: 1
-                            },
-                            fill: {
-                            type: 'solid',
-                            opacity: 0.6
-                            },
-                        toolbar: {
-                        show: false,
-                        }
-                    }
-                    document.querySelector("#chart").innerHTML= ""
-                    var chart = new ApexCharts(document.querySelector("#chart"), options);
-                    chart.render();
+                    this.chartFuntion(res.fcudata)
                     this.loading = false
                 })
+            },
+
+            chartFuntion (data) {
+                console.log("Data: ", data)
+                
+                if (data == null) {
+                    console.log("inside: ", data)
+                    data = [ ]
+                }
+                    
+                var options = {
+                    chart: {
+                        height: 300,
+                        type: 'rangeBar'
+                    },
+                    series: [
+                        {
+                        data: data
+                        }
+                    ],
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            barHeight: '20%'
+                        }
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        labels: {
+                            format: 'dd/MM/yyyy',
+                        }
+                    },
+                    yaxis: {
+                        
+                        show: true,
+                    },
+                    grid: {
+                        row: {
+                            colors: ['#f3f4f5', '#fff'],
+                            opacity: 1
+                        }
+                    },
+                    tooltip: {
+                        x: {
+                            show: false,
+                            format: 'dd/MM HH:mm',
+                        }
+                    },
+                    dataLabels: {
+                        textAnchor: 'start',
+                        distributed: false,
+                        offsetX: 0,
+                        offsetY: 0,
+                    },
+                    stroke: {
+                        width: 1
+                        },
+                        fill: {
+                        type: 'solid',
+                        opacity: 0.6
+                        },
+                    toolbar: {
+                      show: false,
+                    }
+                }
+                document.querySelector("#chart").innerHTML= ""
+                var chart = new ApexCharts(document.querySelector("#chart"), options);
+                chart.render();
             }
         },
     })
