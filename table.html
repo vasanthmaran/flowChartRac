@@ -1,0 +1,257 @@
+<html>
+
+<head>
+    <!-- <title>Animated charts</title> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script type="text/javascript" src="https://static.facilio.com/apps-sdk/latest/facilio_apps_sdk.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/theme/dark.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <div id="app" v-loading="loading" style="padding: 20px;">
+        <div id="chart" width="100%" height="80%"></div>
+        <div style="overflow: auto;">   
+            <el-table 
+            :data="tableData"
+            stripe 
+            row-key="id"
+            @current-change="handleCurrentChange"
+            height="500"
+            style="width: 100%;text-align: center;">
+                <el-table-column>
+                </el-table-column>
+                <el-table-column label="Name" prop="ruleName" sortable  width="600px"> </el-table-column>
+                <el-table-column label="Category" width="200px" prop="assetCategoy" style="text-align: center;"> </el-table-column>
+                <el-table-column label="Type" prop="faultType" width="200px" style="text-align: center;"> </el-table-column>
+                <el-table-column label="Duration" prop="duration" width="200px" sortable style="text-align: center;"> </el-table-column>
+                <el-table-column label="Action"  style="text-align: center;" >
+                    <template slot-scope="props">
+                        <el-link style="color: #409eff;"  :href="props.row.url" target="_blank">More</el-link>
+                    </template>
+                 </el-table-column>
+            </el-table>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                loading: true,
+                tableData: [],
+                options: {}
+            }
+        },
+        mounted() {
+            window.facilioApp = FacilioAppSDK.init();
+            window.facilioApp.on('app.loaded', (data) => {
+                console.log(data)
+                let timeParamMap = {};
+                if (data && data.context && data.context.dashboardFilter && data.context.dashboardFilter && data.context.dashboardFilter.timelineFilter) {
+                    let paramMap = {
+                        startTime: data.context.dashboardFilter.timelineFilter.startTime,
+                        endTime: data.context.dashboardFilter.timelineFilter.endTime,
+                        operatorId: data.context.dashboardFilter.timelineFilter.operatorId,
+                        value: data.context.dashboardFilter.timelineFilter.dateValueString
+                    }
+                    timeParamMap = paramMap;
+                }
+                this.functionDataLoad(timeParamMap)
+            })
+
+            window.facilioApp.on('db.filters.changed', (data) => {
+                console.log(data)
+                let timeParamMap = {};
+                if (data && data.dashboardFilter && data.dashboardFilter.timelineFilter) {
+                    let paramMap = {
+                        startTime: data.dashboardFilter.timelineFilter.startTime,
+                        endTime: data.dashboardFilter.timelineFilter.endTime,
+                        operatorId: data.dashboardFilter.timelineFilter.operatorId,
+                        value: data.dashboardFilter.timelineFilter.dateValueString
+                    }
+                    timeParamMap = paramMap;
+                }
+                this.functionDataLoad(timeParamMap)
+            })
+        },
+        methods: {
+            handleCurrentChange(val) {
+                console.log(val.data)
+                
+                if (val.data != "") {
+                    this.chartFuntion(val.data)
+                }
+                
+            },
+            
+            functionDataLoad(timeParamMap) {
+              this.loading = true
+              console.log("timeParamMap", timeParamMap)
+                let res
+                let urlParams = {
+                    method: 'post',
+                    data: {
+                        workflowId: 1259,
+                        paramList: [timeParamMap]
+                    }
+                }
+                window.facilioApp.request.invokeFacilioAPI('/v2/workflow/runWorkflow', urlParams)
+                .then((response) => {
+                    if (response.result && response.result.workflow) {
+                        res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
+                    }
+                    this.tableData = res.tableData
+                    
+                    var options = {
+                        chart: {
+                            height: 300,
+                            type: 'rangeBar'
+                        },
+                        series: [
+                            {
+                                data: res.fcudata
+                            }
+                        ],
+                        plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                barHeight: '20%'
+                            }
+                        },
+                        xaxis: {
+                            type: 'datetime',
+                            labels: {
+                                format: 'dd/MM/yyyy',
+                            }
+                        },
+                        yaxis: {
+                            
+                            show: true,
+                        },
+                        grid: {
+                            row: {
+                                colors: ['#f3f4f5', '#fff'],
+                                opacity: 1
+                            }
+                        },
+                        tooltip: {
+                            x: {
+                                show: false,
+                                format: 'dd/MM HH:mm',
+                            }
+                        },
+                        dataLabels: {
+                            textAnchor: 'start',
+                            distributed: false,
+                            offsetX: 0,
+                            offsetY: 0,
+                            dropShadow: true
+                        },
+                        stroke: {
+                            width: 1
+                            },
+                            fill: {
+                            type: 'solid',
+                            opacity: 0.6
+                            },
+                        toolbar: {
+                        show: false,
+                        }
+                    }
+                    document.querySelector("#chart").innerHTML= ""
+                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                    chart.render();
+                    this.loading = false
+                })
+            }
+        },
+    })
+</script>
+<style>
+    body {
+        font-family: 'aktiv-grotesk', sans-serif;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-smoothing: antialiased;
+        /* background: #EBECF0;
+        color: #0c0c0c;
+        margin: 0;
+        padding: 0; */
+    }
+
+  * {
+    font-family: 'aktiv-grotesk', sans-serif;
+  }
+    .el-table .warning-row {
+        background: oldlace;
+    }
+
+    .el-table .success-row {
+        background: #f0f9eb;
+    }
+    .el-table--enable-row-transition .el-table__body td {
+        font-size: 13px;
+        font-weight: normal;
+        letter-spacing: .4px;
+        color: #324056;
+        border-bottom-width: thin;
+    }
+    .el-table {
+        position: relative;
+        overflow: hidden;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        width: 100%;
+        max-width: 100%;
+        font-size: 14px;
+        color: #606266;
+    }
+
+    .el-table td.el-table__cell, .el-table th.el-table__cell.is-leaf {
+        border-bottom: 1px solid #EBEEF5;
+    }
+    .el-table th.el-table__cell {
+        overflow: hidden;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-color: #FFF;
+    }
+    .el-table th.is-leaf {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .el-table td, .el-table th.is-leaf {
+        padding-left: 0px;
+    }
+    .contentBody {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-break: break-all;
+        line-height: 23px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .apexcharts-toolbar {
+        /* display: none; */
+    }
+    
+</style>
+</html>
